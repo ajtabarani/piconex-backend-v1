@@ -1,5 +1,5 @@
 abstract class StringValueObject {
-  protected constructor(protected readonly value: string) {
+  protected constructor(private readonly value: string) {
     if (!value || value.trim().length === 0) {
       throw new Error(`${this.constructor.name} cannot be empty`);
     }
@@ -9,7 +9,7 @@ abstract class StringValueObject {
     return this.value;
   }
 
-  equals(other: StringValueObject): boolean {
+  equals(other: this): boolean {
     return this.value === other.value;
   }
 }

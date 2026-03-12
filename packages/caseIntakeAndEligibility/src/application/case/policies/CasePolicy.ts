@@ -1,7 +1,9 @@
 import {
   PersonAuthorizationSnapshot,
   AuthorizationService,
+  Role,
 } from "@piconex/iam";
+import { Case } from "../../../domain";
 
 export class CasePolicy {
   constructor(private readonly auth: AuthorizationService) {}

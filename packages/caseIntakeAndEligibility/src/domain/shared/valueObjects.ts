@@ -24,16 +24,6 @@ export class CaseId extends StringValueObject {
   }
 }
 
-export class PersonId extends StringValueObject {
-  private constructor(value: string) {
-    super(value);
-  }
-
-  static create(value: string): PersonId {
-    return new PersonId(value);
-  }
-}
-
 export class CaseNoteId extends StringValueObject {
   private constructor(value: string) {
     super(value);

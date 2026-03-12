@@ -1,5 +1,6 @@
-import { CaseId, PersonId } from "../shared";
-import PinnedCase from "./PinnedCase";
+import { PersonId } from "@piconex/iam";
+import { CaseId } from "../shared";
+import { PinnedCase } from "./PinnedCase";
 
 export interface PinnedCaseRepository {
   save(pinnedCase: PinnedCase): Promise<void>;

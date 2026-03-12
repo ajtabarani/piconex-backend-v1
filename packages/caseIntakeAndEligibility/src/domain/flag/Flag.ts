@@ -1,12 +1,12 @@
+import { PersonId } from "@piconex/iam";
 import {
-  PersonId,
   FlagId,
   FlagCreated,
   FlagDescriptionUpdated,
   DomainEvent,
 } from "../shared";
 
-export default class Flag {
+export class Flag {
   private readonly flagId: FlagId;
   private name: string;
   private description: string;

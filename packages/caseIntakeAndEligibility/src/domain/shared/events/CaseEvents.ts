@@ -1,11 +1,7 @@
+import { PersonId } from "@piconex/iam";
 import { CaseAssignmentRole, ClosedStatus } from "../../case";
 import { DomainEvent } from "../DomainEvent";
-import {
-  CaseId,
-  CaseNoteId,
-  PersonId,
-  StudentDisabilityId,
-} from "../valueObjects";
+import { CaseId, CaseNoteId, StudentDisabilityId } from "../valueObjects";
 
 export class CaseOpenedByAdmin implements DomainEvent {
   constructor(

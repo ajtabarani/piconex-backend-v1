@@ -1,6 +1,7 @@
-import { CaseId, PersonId, DomainEvent } from "../shared";
+import { PersonId } from "@piconex/iam";
+import { CaseId } from "../shared";
 
-export default class PinnedCase {
+export class PinnedCase {
   private readonly caseId: CaseId;
   private readonly adminId: PersonId;
 

@@ -1,4 +1,5 @@
-import { StudentDisabilityId, PersonId } from "../../shared";
+import { PersonId } from "@piconex/iam";
+import { StudentDisabilityId } from "../../shared";
 
 export class CaseDisability {
   private readonly studentDisabilityId: StudentDisabilityId;

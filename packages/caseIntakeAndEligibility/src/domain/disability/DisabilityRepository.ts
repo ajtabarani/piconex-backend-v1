@@ -1,5 +1,5 @@
 import { DisabilityId } from "../shared";
-import Disability from "./Disability";
+import { Disability } from "./Disability";
 
 export interface DisabilityRepository {
   load(id: DisabilityId): Promise<Disability>;

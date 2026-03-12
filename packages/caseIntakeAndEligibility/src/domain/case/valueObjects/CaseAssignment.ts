@@ -1,4 +1,4 @@
-import { PersonId } from "../../shared";
+import { PersonId } from "@piconex/iam";
 
 export enum CaseAssignmentRole {
   Primary = "PRIMARY",

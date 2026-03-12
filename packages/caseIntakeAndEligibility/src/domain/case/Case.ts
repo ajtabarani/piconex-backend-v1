@@ -1,6 +1,6 @@
+import { PersonId } from "@piconex/iam";
 import {
   CaseId,
-  PersonId,
   StudentDisabilityId,
   CaseOpenedByAdmin,
   CaseOpenedByStudentIntake,
@@ -36,7 +36,7 @@ import {
   CaseState,
 } from "./valueObjects";
 
-export default class Case {
+export class Case {
   private readonly caseId: CaseId;
   private readonly studentId: PersonId;
 
@@ -878,5 +878,9 @@ export default class Case {
 
   getState(): CaseState {
     return this.state;
+  }
+
+  getStudentId(): PersonId {
+    return this.studentId;
   }
 }

@@ -1,5 +1,6 @@
+import { PersonId } from "@piconex/iam";
 import { DomainEvent } from "../DomainEvent";
-import { FlagId, PersonId } from "../valueObjects";
+import { FlagId } from "../valueObjects";
 
 export class FlagCreated implements DomainEvent {
   constructor(

@@ -1,4 +1,5 @@
-import { CaseNoteId, PersonId } from "../../shared";
+import { PersonId } from "@piconex/iam";
+import { CaseNoteId } from "../../shared";
 
 export class CaseNote {
   private readonly noteId: CaseNoteId;

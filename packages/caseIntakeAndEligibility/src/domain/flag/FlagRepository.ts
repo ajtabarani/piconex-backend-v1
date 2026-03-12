@@ -1,5 +1,5 @@
 import { FlagId } from "../shared";
-import Flag from "./Flag";
+import { Flag } from "./Flag";
 
 export interface FlagRepository {
   load(id: FlagId): Promise<Flag>;

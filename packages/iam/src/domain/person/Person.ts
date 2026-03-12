@@ -34,7 +34,6 @@ import {
   StudentRoleReactivated,
   SuperAdminGranted,
   SuperAdminRevoked,
-  UniversityAssigned,
   UniversityUpdated,
 } from "..";
 

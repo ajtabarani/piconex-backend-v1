@@ -1,5 +1,7 @@
-import { CaseId, DisabilityId, DomainEvent, PersonId, StudentDisabilityId, StudentDisabilityCreated, StudentDisabilityStateChanged } from "../shared";
+import { PersonId } from "@piconex/iam";
+import { CaseId, DisabilityId, DomainEvent, StudentDisabilityId } from "../shared";
 import { StudentDisabilityState } from "./valueObjects/studentDisability";
+import { StudentDisabilityCreated, StudentDisabilityStateChanged } from "../shared/events/StudentDisabilityEvents";
 
 export default class StudentDisability {
     private readonly studentDisabilityId: StudentDisabilityId;

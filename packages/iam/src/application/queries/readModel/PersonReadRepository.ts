@@ -3,7 +3,7 @@ import {
   FacultyProfileDTO,
   PersonDTO,
   StudentProfileDTO,
-} from "..";
+} from "./dto";
 import { PersonId, ExternalAuthId } from "../../../domain";
 import { PersonAuthorizationSnapshot } from "../../policies";
 

@@ -4,6 +4,12 @@
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf packages/*/dist apps/*/dist",
+    "rebuild": "npm run clean && npm run build",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
     "typescript": "^5.x",
     "tsx": "^4.x",

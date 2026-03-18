@@ -3,19 +3,24 @@ import { bootstrapIAM } from "./bootstrap/bootstrapIAM";
 
 async function main() {
   const pool = createPool({
-    host: process.env.DB_HOST ?? "localhost",
-    user: process.env.DB_USER ?? "root",
-    password: process.env.DB_PASSWORD ?? "",
-    database: process.env.DB_NAME ?? "piconex",
+    host: "178.156.189.138",
+    user: "piconex",
+    password: "pjaplmTabs7!",
+    database: "piconexdb_v1",
+    waitForConnections: true,
+    connectionLimit: 10,
+    maxIdle: 10,
+    idleTimeout: 60000,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0,
   });
 
   const iam = bootstrapIAM(pool);
 
-  // Example usage
-  console.log("IAM context bootstrapped:", iam);
+  console.log("Success");
 }
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
 });

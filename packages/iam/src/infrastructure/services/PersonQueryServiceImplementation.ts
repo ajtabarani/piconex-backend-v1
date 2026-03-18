@@ -4,10 +4,11 @@ import {
   AdminProfileDTO,
   FacultyProfileDTO,
   StudentProfileDTO,
+  PersonQueryService,
 } from "../../application";
 import { PersonId } from "../../domain";
 
-export interface PersonQueryService {
+export class PersonQueryServiceImpl implements PersonQueryService {
   getPersonById(
     actor: PersonAuthorizationSnapshot,
     personId: PersonId,

@@ -1,7 +1,8 @@
-import { ExternalAuthId, Person, PersonId } from ".";
+import { Person } from "./Person";
+import { PersonId, ExternalAuthId } from "./valueObjects";
 
 export interface PersonRepository {
-  load(id: PersonId): Promise<Person>;
+  load(id: PersonId): void;
   findById(personId: PersonId): Promise<Person | null>;
   findByExternalAuthId(externalAuthId: ExternalAuthId): Promise<Person | null>;
   loadSuperAdmin(): Promise<Person>;

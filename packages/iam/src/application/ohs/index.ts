@@ -1,2 +1,2 @@
 export * from "./AuthorizationService";
-export * from "./PersonQueryService";
+// export * from "./PersonQueryService";

@@ -1,2 +1,2 @@
 export * from "./AuthorizationServiceImplementation";
-export * from "./PersonQueryServiceImplementation";
+// export * from "./PersonQueryServiceImplementation";

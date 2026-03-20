@@ -1,8 +1,8 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/iam" },
-    { "path": "packages/caseIntakeAndEligibility" },
-    { "path": "packages/communication" }
+    { "path": "packages/iam" }
+    // { "path": "packages/caseIntakeAndEligibility" },
+    // { "path": "packages/communication" } // Disabling building of anything but iam
   ]
 }

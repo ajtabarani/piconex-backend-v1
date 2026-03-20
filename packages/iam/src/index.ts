@@ -1,6 +1,6 @@
 export {
   AuthorizationService,
-  PersonQueryService,
+  // PersonQueryService,
   PersonAuthorizationSnapshot,
 } from "./application";
 

@@ -4,6 +4,7 @@ import {
   Address,
   PersonRepository,
   Person,
+  ImportJobId,
 } from "../../../domain";
 import {
   PersonAuthorizationSnapshot,
@@ -35,7 +36,7 @@ export interface CreateImportedFacultyRequest {
   department: string | null;
   title: string | null;
 
-  importJobId: string;
+  importJobId: ImportJobId;
 }
 
 export class CreateImportedFaculty {

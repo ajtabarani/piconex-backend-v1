@@ -43,3 +43,13 @@ export class UniversityId extends StringValueObject {
     return new UniversityId(value);
   }
 }
+
+export class ImportJobId extends StringValueObject {
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static create(value: string): ImportJobId {
+    return new ImportJobId(value);
+  }
+}

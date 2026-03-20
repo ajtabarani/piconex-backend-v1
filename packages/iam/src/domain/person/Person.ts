@@ -3,6 +3,7 @@ import {
   AdminProfile,
   ExternalAuthId,
   FacultyProfile,
+  ImportJobId,
   PersonId,
   PersonState,
   Role,
@@ -71,8 +72,8 @@ export class Person {
     state: PersonState,
 
     private readonly createdAt: Date,
-    private updatedAt: Date,
-    private importJobId: string | null,
+    private updatedAt: Date | null,
+    private importJobId: ImportJobId | null,
 
     private domainEvents: DomainEvent[] = [],
   ) {
@@ -111,7 +112,7 @@ export class Person {
     universityProgram: string | null,
     academicLevel: string | null,
     yearOfStudy: string | null,
-    importJobId: string,
+    importJobId: ImportJobId,
   ): Person {
     const now = new Date();
 
@@ -134,7 +135,7 @@ export class Person {
       [Role.Student],
       PersonState.Active,
       now,
-      now,
+      null,
       importJobId,
     );
 
@@ -190,7 +191,7 @@ export class Person {
   //     [Role.Student],
   //     PersonState.Active,
   //     now,
-  //     now,
+  //     null,
   //     null,
   //   );
 
@@ -222,7 +223,7 @@ export class Person {
     address: Address | null,
     department: string | null,
     title: string | null,
-    importJobId: string,
+    importJobId: ImportJobId,
   ): Person {
     const now = new Date();
 
@@ -245,7 +246,7 @@ export class Person {
       [Role.Faculty],
       PersonState.Active,
       now,
-      now,
+      null,
       importJobId,
     );
 
@@ -296,7 +297,7 @@ export class Person {
   //     [Role.Faculty],
   //     PersonState.Active,
   //     now,
-  //     now,
+  //     null,
   //     null,
   //   );
 
@@ -348,7 +349,7 @@ export class Person {
       [Role.Admin],
       PersonState.Active,
       now,
-      now,
+      null,
       null,
     );
 
@@ -390,7 +391,7 @@ export class Person {
 
     createdAt: Date,
     updatedAt: Date,
-    importJobId: string | null,
+    importJobId: ImportJobId | null,
 
     studentProfile?: StudentProfile,
     facultyProfile?: FacultyProfile,
@@ -663,12 +664,80 @@ export class Person {
   }
 
   // Read Interfaces
-  getId(): PersonId {
+  getPersonId(): PersonId {
     return this.personId;
   }
 
   getExternalAuthId(): ExternalAuthId | null {
     return this.externalAuthId;
+  }
+
+  getUniversityId(): UniversityId {
+    return this.universityId;
+  }
+
+  isSystemSuperAdmin(): boolean {
+    return this.isSuperAdmin;
+  }
+
+  getFirstName(): string {
+    return this.firstName;
+  }
+
+  getPreferredName(): string | null {
+    return this.preferredName;
+  }
+
+  getMiddleName(): string | null {
+    return this.middleName;
+  }
+
+  getLastName(): string {
+    return this.lastName;
+  }
+
+  getEmail(): string {
+    return this.email;
+  }
+
+  getPhoneNumber(): string | null {
+    return this.phoneNumber;
+  }
+
+  getPronouns(): string | null {
+    return this.pronouns;
+  }
+
+  getSex(): string | null {
+    return this.sex;
+  }
+
+  getGender(): string | null {
+    return this.gender;
+  }
+
+  getBirthday(): Date | null {
+    return this.birthday;
+  }
+
+  getAddress(): Address | null {
+    return this.address;
+  }
+
+  getState(): PersonState {
+    return this.state;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
+  getUpdatedAt(): Date | null {
+    return this.updatedAt;
+  }
+
+  getImportJobId(): ImportJobId | null {
+    return this.importJobId;
   }
 
   isActive(): boolean {
@@ -677,10 +746,6 @@ export class Person {
 
   hasRole(role: Role): boolean {
     return this.roles.has(role);
-  }
-
-  isSystemSuperAdmin(): boolean {
-    return this.isSuperAdmin;
   }
 
   getStudentProfile(): StudentProfile {

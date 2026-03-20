@@ -86,7 +86,7 @@ export class FacultyProfile {
     return this.state === RoleState.Active;
   }
 
-  // 🔎 Read interfaces
+  // Read interfaces
   getDepartment(): string | null {
     return this.department;
   }
@@ -95,7 +95,19 @@ export class FacultyProfile {
     return this.title;
   }
 
+  getState(): RoleState {
+    return this.state;
+  }
+
   getStateChangedAt(): Date {
     return this.stateChangedAt;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
+  getUpdatedAt(): Date | null {
+    return this.updatedAt;
   }
 }

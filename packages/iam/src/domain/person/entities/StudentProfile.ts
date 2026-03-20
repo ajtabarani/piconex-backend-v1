@@ -92,4 +92,32 @@ export class StudentProfile {
   isActive(): boolean {
     return this.state === RoleState.Active;
   }
+
+  getUniversityProgram(): string | null {
+    return this.universityProgram;
+  }
+
+  getAcademicLevel(): string | null {
+    return this.academicLevel;
+  }
+
+  getYearOfStudy(): string | null {
+    return this.yearOfStudy;
+  }
+
+  getState(): RoleState {
+    return this.state;
+  }
+
+  getStateChangedAt(): Date {
+    return this.stateChangedAt;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
+  getUpdatedAt(): Date | null {
+    return this.updatedAt;
+  }
 }

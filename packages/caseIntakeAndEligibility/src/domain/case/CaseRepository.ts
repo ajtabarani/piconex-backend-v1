@@ -1,5 +1,5 @@
 import { CaseId } from "../shared";
-import Case from "./Case";
+import { Case } from "./Case";
 
 export interface CaseRepository {
   load(id: CaseId): Promise<Case>;

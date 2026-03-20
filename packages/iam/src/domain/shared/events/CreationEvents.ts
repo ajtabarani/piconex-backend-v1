@@ -1,5 +1,5 @@
 import { DomainEvent } from "..";
-import { PersonId, Role } from "../..";
+import { ImportJobId, PersonId, Role } from "../..";
 
 export class PersonCreated implements DomainEvent {
   constructor(
@@ -12,7 +12,7 @@ export class PersonCreated implements DomainEvent {
 export class PersonImported implements DomainEvent {
   constructor(
     public readonly personId: PersonId,
-    public readonly importJobId: string,
+    public readonly importJobId: ImportJobId,
     public readonly occurredAt: Date,
   ) {}
 }

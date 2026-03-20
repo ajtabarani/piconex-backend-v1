@@ -105,7 +105,19 @@ export class AdminProfile {
     return this.specialization;
   }
 
+  getState(): RoleState {
+    return this.state;
+  }
+
   getStateChangedAt(): Date {
     return this.stateChangedAt;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
+  getUpdatedAt(): Date | null {
+    return this.updatedAt;
   }
 }

@@ -1,4 +1,4 @@
-import { createPool } from "mysql2";
+import { createPool } from "mysql2/promise";
 import { bootstrapIAM } from "./bootstrap/bootstrapIAM";
 
 async function main() {
@@ -18,6 +18,7 @@ async function main() {
 
   const iam = bootstrapIAM(pool);
 
+  console.log(iam.getAuthorizationSnapshot());
   console.log("Success");
 }
 

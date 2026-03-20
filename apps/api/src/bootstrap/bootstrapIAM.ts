@@ -1,4 +1,4 @@
-import { Pool } from "mysql2";
+import { Pool } from "mysql2/promise";
 import {
   PersonPolicy,
   PolicyGuard,
@@ -64,6 +64,7 @@ export function bootstrapIAM(pool: Pool) {
   );
 
   return {
+    getAuthorizationSnapshot,
     // expose use cases if needed
     updateContactInformation,
 

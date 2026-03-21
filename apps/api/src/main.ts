@@ -18,7 +18,6 @@ async function main() {
 
   const iam = bootstrapIAM(pool);
 
-  console.log(iam.getAuthorizationSnapshot());
   console.log("Success");
 }
 

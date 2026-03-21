@@ -4,15 +4,12 @@
   "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {
-    "dev": "tsx src/main.ts",
     "build": "tsc",
-    "start": "node dist/main.js",
+    "start": "npm run build && node dist/main.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@piconex/iam": "*",
-    "@piconex/case": "*",
-    "@piconex/communication": "*",
     "mysql2": "^3.9.0"
   }
 }

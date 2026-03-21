@@ -1,0 +1,88 @@
+START TRANSACTION;
+INSERT INTO iam_person (
+  person_id,
+  external_auth_id,
+  university_id,
+  is_super_admin,
+
+  first_name,
+  preferred_name,
+  middle_name,
+  last_name,
+
+  email,
+  phone_number,
+
+  pronouns,
+  sex,
+  gender,
+
+  birthday,
+
+  address_line1,
+  address_line2,
+  city,
+  geographical_state,
+  zip_code,
+  country,
+
+  state,
+  created_at,
+  updated_at,
+  import_job_id
+) VALUES (
+  '1', -- person_id
+  NULL,                                  -- external_auth_id
+  '1jdhx3b35', -- university_id
+  1,                                     -- is_super_admin
+
+  'Abraham',
+  'AJ',
+  'Joseph',
+  'Tabarani',
+
+  'atabarani03@gmail.com',
+  '6107398420',
+
+  NULL,
+  'Male',
+  NULL,
+
+  '2003-05-03',
+
+  '1107 W Highland St',
+  NULL,
+  'Whitehall',
+  'Pennsylvania',
+  '18052',
+  'United States',
+
+  'Active',
+  NOW(),
+  NULL,
+  NULL
+);
+
+INSERT INTO iam_person_adminProfile (
+  person_id,
+  job_title,
+  department,
+  specialization,
+  state,
+  state_changed_at,
+  created_at,
+  updated_at
+) VALUES (
+  '1',
+
+  'System Administrator',
+  'IT',
+  'Platform Management',
+
+  'Active',
+  NOW(),
+  NOW(),
+  NOW()
+);
+
+COMMIT;

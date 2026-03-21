@@ -5,7 +5,7 @@ export class FacultyProfile {
   private stateChangedAt: Date;
 
   private createdAt: Date;
-  private updatedAt: Date;
+  private updatedAt: Date | null;
 
   private constructor(
     private department: string | null,
@@ -13,7 +13,7 @@ export class FacultyProfile {
     state: RoleState,
     stateChangedAt: Date,
     createdAt: Date,
-    updatedAt: Date,
+    updatedAt: Date | null,
   ) {
     this.state = state;
     this.stateChangedAt = stateChangedAt;
@@ -33,7 +33,7 @@ export class FacultyProfile {
       RoleState.Active,
       now,
       now,
-      now,
+      null,
     );
   }
 

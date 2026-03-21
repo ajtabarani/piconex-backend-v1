@@ -1,4 +1,4 @@
-import { ExternalAuthId } from "../../../domain";
+import { AuthProvider, ExternalAuthId } from "../../../domain";
 import {
   PersonAuthorizationSnapshot,
   PersonPolicy,
@@ -6,12 +6,13 @@ import {
 } from "../../policies";
 import { PersonReadRepository, PersonDTO } from "../readModel";
 
-export interface GetPersonByExternalAuthIdRequest {
+export interface GetPersonByExternalAuthAccountRequest {
   actor: PersonAuthorizationSnapshot;
+  provider: AuthProvider;
   externalAuthId: ExternalAuthId;
 }
 
-export class GetPersonByExternalAuthId {
+export class GetPersonByExternalAuthAccount {
   constructor(
     private readonly repository: PersonReadRepository,
     private readonly policy: PersonPolicy,
@@ -19,10 +20,13 @@ export class GetPersonByExternalAuthId {
   ) {}
 
   async execute(
-    request: GetPersonByExternalAuthIdRequest,
+    request: GetPersonByExternalAuthAccountRequest,
   ): Promise<PersonDTO | null> {
     this.guard.ensure(this.policy.hasAdministrativeAuthority(request.actor));
 
-    return this.repository.findByExternalAuthId(request.externalAuthId);
+    return this.repository.findByExternalAuthAccount(
+      request.provider,
+      request.externalAuthId,
+    );
   }
 }

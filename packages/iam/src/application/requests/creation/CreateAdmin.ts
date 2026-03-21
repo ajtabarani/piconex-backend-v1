@@ -5,6 +5,7 @@ import {
   Address,
   PersonRepository,
   Person,
+  AuthProvider,
 } from "../../../domain";
 import {
   PersonAuthorizationSnapshot,
@@ -16,6 +17,7 @@ export interface CreateAdminRequest {
   actor: PersonAuthorizationSnapshot;
 
   personId: PersonId;
+  authProvider: AuthProvider;
   externalAuthId: ExternalAuthId;
   universityId: UniversityId;
 
@@ -49,7 +51,8 @@ export class CreateAdmin {
   async execute(request: CreateAdminRequest): Promise<void> {
     this.guard.ensure(this.policy.isSuperAdmin(request.actor));
 
-    const existing = await this.repository.findByExternalAuthId(
+    const existing = await this.repository.findByExternalAuthAccount(
+      request.authProvider,
       request.externalAuthId,
     );
 
@@ -59,6 +62,7 @@ export class CreateAdmin {
 
     const person = Person.createAdmin(
       request.personId,
+      request.authProvider,
       request.externalAuthId,
       request.universityId,
       request.firstName,

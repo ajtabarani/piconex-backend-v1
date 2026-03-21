@@ -8,7 +8,13 @@ import {
   PersonReadRepository,
   RoleAuthorizationSnapshot,
 } from "../../application";
-import { PersonId, ExternalAuthId, Role, UniversityId } from "../../domain";
+import {
+  PersonId,
+  ExternalAuthId,
+  Role,
+  UniversityId,
+  AuthProvider,
+} from "../../domain";
 
 export class PersonReadRepositoryImpl implements PersonReadRepository {
   constructor(private readonly pool: Pool) {}
@@ -24,12 +30,13 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
     return this.buildPersonDTO(rows[0]);
   }
 
-  async findByExternalAuthId(
+  async findByExternalAuthAccount(
+    authProvider: AuthProvider,
     externalAuthId: ExternalAuthId,
   ): Promise<PersonDTO | null> {
     const [rows] = await this.pool.query<any[]>(
-      `SELECT * FROM iam_person WHERE external_auth_id = ?`,
-      [externalAuthId],
+      `SELECT * FROM iam_person WHERE auth_provider = ? AND external_auth_id = ?`,
+      [authProvider, externalAuthId],
     );
 
     if (rows.length === 0) return null;
@@ -139,6 +146,11 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
   private async buildPersonDTO(row: any): Promise<PersonDTO> {
     const personId = row.person_id;
 
+    // -- pull linked external auth accounts
+    const [externalAuthAccounts] = await this.pool.query<any[]>(
+      `SELECT * FROM iam_person_externalAuthAccounts WHERE person_id = ?`,
+      [personId],
+    );
     // --- derive roles from profiles ---
     const roles: Role[] = [];
 
@@ -162,7 +174,7 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
 
     return {
       personId: row.person_id,
-      externalAuthId: row.external_auth_id,
+      externalAuthAccounts: externalAuthAccounts,
       universityId: row.university_id,
 
       firstName: row.first_name,

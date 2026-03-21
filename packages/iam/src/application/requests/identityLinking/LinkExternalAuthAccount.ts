@@ -1,9 +1,15 @@
-import { PersonId, ExternalAuthId, PersonRepository } from "../../../domain";
+import {
+  PersonId,
+  ExternalAuthId,
+  PersonRepository,
+  AuthProvider,
+} from "../../../domain";
 import { PersonAuthorizationSnapshot } from "../../policies";
 
 export interface LinkExternalAuthAccountRequest {
   actor: PersonAuthorizationSnapshot;
   personId: PersonId;
+  authProvider: AuthProvider;
   externalAuthId: ExternalAuthId;
 }
 
@@ -11,7 +17,8 @@ export class LinkExternalAuthAccount {
   constructor(private readonly repository: PersonRepository) {}
 
   async execute(request: LinkExternalAuthAccountRequest): Promise<void> {
-    const existing = await this.repository.findByExternalAuthId(
+    const existing = await this.repository.findByExternalAuthAccount(
+      request.authProvider,
       request.externalAuthId,
     );
 
@@ -21,7 +28,10 @@ export class LinkExternalAuthAccount {
 
     const person = await this.repository.load(request.personId);
 
-    person.linkExternalAuth(request.externalAuthId);
+    person.linkExternalAuthAccount(
+      request.authProvider,
+      request.externalAuthId,
+    );
 
     await this.repository.save(person);
   }

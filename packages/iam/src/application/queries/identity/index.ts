@@ -1,2 +1,2 @@
-export * from "./GetPersonByExternalAuthId";
+export * from "./GetPersonByExternalAuthAccount";
 export * from "./GetPersonById";

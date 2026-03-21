@@ -4,13 +4,14 @@ import {
   PersonDTO,
   StudentProfileDTO,
 } from "./dto";
-import { PersonId, ExternalAuthId } from "../../../domain";
+import { PersonId, ExternalAuthId, AuthProvider } from "../../../domain";
 import { PersonAuthorizationSnapshot } from "../../policies";
 
 export interface PersonReadRepository {
   findById(personId: PersonId): Promise<PersonDTO | null>;
 
-  findByExternalAuthId(
+  findByExternalAuthAccount(
+    provider: AuthProvider,
     externalAuthId: ExternalAuthId,
   ): Promise<PersonDTO | null>;
 

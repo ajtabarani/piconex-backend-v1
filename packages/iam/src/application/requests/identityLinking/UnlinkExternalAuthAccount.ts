@@ -1,4 +1,9 @@
-import { PersonId, PersonRepository } from "../../../domain";
+import {
+  AuthProvider,
+  ExternalAuthId,
+  PersonId,
+  PersonRepository,
+} from "../../../domain";
 import {
   PersonAuthorizationSnapshot,
   PersonPolicy,
@@ -8,6 +13,8 @@ import {
 export interface UnlinkExternalAuthAccountRequest {
   actor: PersonAuthorizationSnapshot;
   personId: PersonId;
+  authProvider: AuthProvider;
+  externalAuthId: ExternalAuthId;
 }
 
 export class UnlinkExternalAuthAccount {
@@ -22,7 +29,10 @@ export class UnlinkExternalAuthAccount {
 
     const person = await this.repository.load(request.personId);
 
-    person.unlinkExternalAuth();
+    person.unlinkExternalAuthAccount(
+      request.authProvider,
+      request.externalAuthId,
+    );
 
     await this.repository.save(person);
   }

@@ -2,8 +2,10 @@ import { Role } from "../../../../domain";
 
 export type PersonDTO = {
   personId: string;
-
-  externalAuthId: string | null;
+  externalAuthAccounts: {
+    provider: string;
+    externalAuthId: string;
+  }[];
   universityId: string | null;
 
   firstName: string;

@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "rebuild": "npm run clean && npm run build"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./composition": "./dist/composition.js"

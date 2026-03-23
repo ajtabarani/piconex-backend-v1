@@ -86,3 +86,22 @@ INSERT INTO iam_person_adminProfile (
 );
 
 COMMIT;
+
+CREATE TABLE iam_person_externalAuthAccount (
+  external_auth_account_id CHAR(36) PRIMARY KEY,
+
+  person_id CHAR(36) NOT NULL,
+
+  auth_provider VARCHAR(50) NOT NULL,
+  external_auth_id VARCHAR(255) NOT NULL,
+
+  created_at DATETIME NOT NULL,
+
+  UNIQUE (auth_provider, external_auth_id),
+  UNIQUE (person_id, auth_provider),
+
+  FOREIGN KEY (person_id) REFERENCES iam_person(person_id)
+);
+
+ALTER TABLE iam_person_externalAuthAccount
+MODIFY external_auth_account_id CHAR(36) NOT NULL DEFAULT (UUID());

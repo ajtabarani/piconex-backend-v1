@@ -6,7 +6,6 @@ import {
   FacultyProfileDTO,
   AdminProfileDTO,
   PersonReadRepository,
-  RoleAuthorizationSnapshot,
 } from "../../application";
 import {
   PersonId,
@@ -35,7 +34,13 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
     externalAuthId: ExternalAuthId,
   ): Promise<PersonDTO | null> {
     const [rows] = await this.pool.query<any[]>(
-      `SELECT * FROM iam_person WHERE auth_provider = ? AND external_auth_id = ?`,
+      `
+    SELECT p.*
+    FROM iam_person p
+    JOIN iam_person_externalAuthAccount ea
+      ON ea.person_id = p.person_id
+    WHERE ea.auth_provider = ? AND ea.external_auth_id = ?
+    `,
       [authProvider, externalAuthId],
     );
 
@@ -60,19 +65,12 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
     const person = await this.findById(personId);
     if (!person) return null;
 
-    const roles: RoleAuthorizationSnapshot[] = person.roles.map((role) => ({
-      role,
-      active: true, // since profile exists → active
-    }));
-
     return {
       personId,
-      universityId: person.universityId
-        ? UniversityId.create(person.universityId)
-        : null,
+      universityId: UniversityId.create(person.universityId),
       isActive: person.isActive,
       isSuperAdmin: person.isSuperAdmin,
-      roles,
+      activeRoles: person.roles,
     };
   }
 
@@ -148,33 +146,35 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
 
     // -- pull linked external auth accounts
     const [externalAuthAccounts] = await this.pool.query<any[]>(
-      `SELECT * FROM iam_person_externalAuthAccounts WHERE person_id = ?`,
+      `SELECT * FROM iam_person_externalAuthAccount WHERE person_id = ?`,
       [personId],
     );
-    // --- derive roles from profiles ---
+
+    // --- derive roles from profiles (single query) ---
+    const [roleRows] = await this.pool.query<any[]>(
+      `
+      SELECT
+        EXISTS(SELECT 1 FROM iam_person_studentProfile WHERE person_id = ?) AS has_student,
+        EXISTS(SELECT 1 FROM iam_person_facultyProfile WHERE person_id = ?) AS has_faculty,
+        EXISTS(SELECT 1 FROM iam_person_adminProfile WHERE person_id = ?) AS has_admin
+      `,
+      [personId, personId, personId],
+    );
+
     const roles: Role[] = [];
 
-    const [student] = await this.pool.query<any[]>(
-      `SELECT 1 FROM iam_person_studentProfile WHERE person_id = ? LIMIT 1`,
-      [personId],
-    );
-    if (student.length > 0) roles.push(Role.Student);
+    const roleRow = roleRows[0];
 
-    const [faculty] = await this.pool.query<any[]>(
-      `SELECT 1 FROM iam_person_facultyProfile WHERE person_id = ? LIMIT 1`,
-      [personId],
-    );
-    if (faculty.length > 0) roles.push(Role.Faculty);
-
-    const [admin] = await this.pool.query<any[]>(
-      `SELECT 1 FROM iam_person_adminProfile WHERE person_id = ? LIMIT 1`,
-      [personId],
-    );
-    if (admin.length > 0) roles.push(Role.Admin);
+    if (roleRow.has_student) roles.push(Role.Student);
+    if (roleRow.has_faculty) roles.push(Role.Faculty);
+    if (roleRow.has_admin) roles.push(Role.Admin);
 
     return {
       personId: row.person_id,
-      externalAuthAccounts: externalAuthAccounts,
+      externalAuthAccounts: externalAuthAccounts.map((ea) => ({
+        authProvider: ea.auth_provider,
+        externalAuthId: ea.external_auth_id,
+      })),
       universityId: row.university_id,
 
       firstName: row.first_name,

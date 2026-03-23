@@ -2,6 +2,8 @@ import { Pool } from "mysql2/promise";
 import {
   Address,
   AdminProfile,
+  AuthProvider,
+  ExternalAuthAccount,
   ExternalAuthId,
   FacultyProfile,
   Person,
@@ -34,12 +36,19 @@ export class PersonRepositoryImpl implements PersonRepository {
     return this.buildPersonAggregate(rows[0]);
   }
 
-  async findByExternalAuthId(
+  async findByExternalAuthAccount(
+    authProvider: AuthProvider,
     externalAuthId: ExternalAuthId,
   ): Promise<Person | null> {
     const [rows] = await this.pool.query<any[]>(
-      `SELECT * FROM iam_person WHERE external_auth_id = ?`,
-      [externalAuthId],
+      `
+    SELECT p.*
+    FROM iam_person p
+    JOIN iam_person_externalAuthAccount ea
+      ON ea.person_id = p.person_id
+    WHERE ea.auth_provider = ? AND ea.external_auth_id = ?
+    `,
+      [authProvider, externalAuthId],
     );
 
     if (rows.length === 0) return null;
@@ -69,16 +78,15 @@ export class PersonRepositoryImpl implements PersonRepository {
       await conn.query(
         `
         INSERT INTO iam_person (
-          person_id, external_auth_id, university_id, is_super_admin,
+          person_id, university_id, is_super_admin,
           first_name, preferred_name, middle_name, last_name,
           email, phone_number,
           pronouns, sex, gender,
           birthday,
           address_line1, address_line2, city, geographical_state, zip_code, country,
           state, created_at, updated_at, import_job_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
-          external_auth_id = VALUES(external_auth_id),
           university_id = VALUES(university_id),
           is_super_admin = VALUES(is_super_admin),
           first_name = VALUES(first_name),
@@ -103,7 +111,6 @@ export class PersonRepositoryImpl implements PersonRepository {
         `,
         [
           person.getPersonId(),
-          person.getExternalAuthId(),
           person.getUniversityId(),
           person.isSystemSuperAdmin(),
 
@@ -126,7 +133,7 @@ export class PersonRepositoryImpl implements PersonRepository {
           person.getAddress()?.getCity(),
           person.getAddress()?.getGeographicalState(),
           person.getAddress()?.getZipCode(),
-          person.getAddress()?.getCountry,
+          person.getAddress()?.getCountry(),
 
           person.getState(),
           person.getCreatedAt(),
@@ -135,10 +142,34 @@ export class PersonRepositoryImpl implements PersonRepository {
         ],
       );
 
-      // --- Profiles (UPSERT) ---
+      // --- Auth Accounts (UPSERT) ---
 
       const personId = person.getPersonId();
 
+      const externalAuthAccounts = person.getExternalAuthAccounts?.();
+      if (externalAuthAccounts && externalAuthAccounts.length > 0) {
+        for (const account of externalAuthAccounts) {
+          await conn.query(
+            `
+            INSERT IGNORE INTO iam_person_externalAuthAccount (
+                external_auth_account_id,
+                person_id,
+                auth_provider,
+                external_auth_id,
+                linked_at
+              ) VALUES (UUID(), ?, ?, ?, ?)
+            `,
+            [
+              personId,
+              account.getAuthProvider(),
+              account.getExternalAuthId(),
+              account.getLinkedAt(),
+            ],
+          );
+        }
+      }
+
+      // --- Profiles (UPSERT) ---
       const adminProfile = person.getAdminProfile?.();
       if (adminProfile) {
         await conn.query(
@@ -168,8 +199,8 @@ export class PersonRepositoryImpl implements PersonRepository {
         );
       }
 
-      const student = person.getStudentProfile?.();
-      if (student) {
+      const studentProfile = person.getStudentProfile?.();
+      if (studentProfile) {
         await conn.query(
           `
     INSERT INTO iam_person_studentProfile (
@@ -186,19 +217,19 @@ export class PersonRepositoryImpl implements PersonRepository {
     `,
           [
             personId,
-            student.getUniversityProgram(),
-            student.getAcademicLevel(),
-            student.getYearOfStudy(),
-            student.getState(),
-            student.getStateChangedAt(),
-            student.getCreatedAt(),
-            student.getUpdatedAt(),
+            studentProfile.getUniversityProgram(),
+            studentProfile.getAcademicLevel(),
+            studentProfile.getYearOfStudy(),
+            studentProfile.getState(),
+            studentProfile.getStateChangedAt(),
+            studentProfile.getCreatedAt(),
+            studentProfile.getUpdatedAt(),
           ],
         );
       }
 
-      const faculty = person.getFacultyProfile?.();
-      if (faculty) {
+      const facultyProfile = person.getFacultyProfile?.();
+      if (facultyProfile) {
         await conn.query(
           `
     INSERT INTO iam_person_facultyProfile (
@@ -214,12 +245,12 @@ export class PersonRepositoryImpl implements PersonRepository {
     `,
           [
             personId,
-            faculty.getDepartment(),
-            faculty.getTitle(),
-            faculty.getState(),
-            faculty.getStateChangedAt(),
-            faculty.getCreatedAt(),
-            faculty.getUpdatedAt(),
+            facultyProfile.getDepartment(),
+            facultyProfile.getTitle(),
+            facultyProfile.getState(),
+            facultyProfile.getStateChangedAt(),
+            facultyProfile.getCreatedAt(),
+            facultyProfile.getUpdatedAt(),
           ],
         );
       }
@@ -240,6 +271,12 @@ export class PersonRepositoryImpl implements PersonRepository {
   private async buildPersonAggregate(row: any): Promise<Person> {
     const personId = row.person_id;
 
+    // -- pull linked external auth accounts
+    const [externalAuthAccounts] = await this.pool.query<any[]>(
+      `SELECT * FROM iam_person_externalAuthAccount WHERE person_id = ?`,
+      [personId],
+    );
+
     // --- profiles ---
     const [adminRows] = await this.pool.query<any[]>(
       `SELECT * FROM iam_person_adminProfile WHERE person_id = ?`,
@@ -257,22 +294,45 @@ export class PersonRepositoryImpl implements PersonRepository {
     );
 
     const adminProfile = adminRows[0]
-      ? (adminRows[0] as AdminProfile)
+      ? AdminProfile.restore(
+          adminRows[0].job_title,
+          adminRows[0].department,
+          adminRows[0].specialization,
+          adminRows[0].state,
+          adminRows[0].state_changed_at,
+          adminRows[0].created_at,
+          adminRows[0].updated_at,
+        )
       : undefined;
 
     const studentProfile = studentRows[0]
-      ? (studentRows[0] as StudentProfile)
+      ? StudentProfile.restore(
+          studentRows[0].university_program,
+          studentRows[0].academic_level,
+          studentRows[0].year_of_study,
+          studentRows[0].state,
+          studentRows[0].state_changed_at,
+          studentRows[0].created_at,
+          studentRows[0].updated_at,
+        )
       : undefined;
 
     const facultyProfile = facultyRows[0]
-      ? (facultyRows[0] as FacultyProfile)
+      ? FacultyProfile.restore(
+          facultyRows[0].department,
+          facultyRows[0].title,
+          facultyRows[0].state,
+          facultyRows[0].state_changed_at,
+          facultyRows[0].created_at,
+          facultyRows[0].updated_at,
+        )
       : undefined;
 
     // --- roles derived ---
     const roles: Role[] = [];
-    if (studentProfile) roles.push("Student" as Role);
-    if (facultyProfile) roles.push("Faculty" as Role);
-    if (adminProfile) roles.push("Admin" as Role);
+    if (studentProfile && studentProfile.isActive()) roles.push(Role.Student);
+    if (facultyProfile && facultyProfile.isActive()) roles.push(Role.Faculty);
+    if (adminProfile && adminProfile.isActive()) roles.push(Role.Admin);
 
     // --- address ---
     const address: Address | null =
@@ -289,7 +349,14 @@ export class PersonRepositoryImpl implements PersonRepository {
 
     return Person.restore(
       row.person_id,
-      row.external_auth_id,
+      externalAuthAccounts.map(
+        (ea) =>
+          new ExternalAuthAccount(
+            ea.auth_provider,
+            ea.external_auth_id,
+            ea.linked_at,
+          ),
+      ),
       row.university_id,
       !!row.is_super_admin,
 
@@ -309,7 +376,7 @@ export class PersonRepositoryImpl implements PersonRepository {
       address,
 
       roles,
-      row.state as PersonState,
+      row.state,
 
       row.created_at,
       row.updated_at,

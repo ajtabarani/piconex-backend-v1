@@ -28,8 +28,6 @@ export class CheckPersonHasRole {
 
     this.guard.ensure(this.policy.canViewPerson(request.actor, target));
 
-    return target.roles.some(
-      (r) => r.role === request.role && r.active === true,
-    );
+    return target.activeRoles.some((r) => r === request.role);
   }
 }

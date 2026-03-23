@@ -65,7 +65,7 @@ export class PersonPolicy {
   }
 
   private hasActiveRole(actor: PersonAuthorizationSnapshot, role: Role) {
-    return actor.roles.some((r) => r.role === role && r.active);
+    return actor.activeRoles.some((r) => r === role);
   }
 
   private getHighestRank(snapshot: PersonAuthorizationSnapshot): number {

@@ -3,10 +3,10 @@ import { Role } from "../../../../domain";
 export type PersonDTO = {
   personId: string;
   externalAuthAccounts: {
-    provider: string;
+    authProvider: string;
     externalAuthId: string;
   }[];
-  universityId: string | null;
+  universityId: string;
 
   firstName: string;
   preferredName: string | null;

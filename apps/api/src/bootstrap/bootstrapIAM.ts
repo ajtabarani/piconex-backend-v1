@@ -276,7 +276,7 @@ export function bootstrapIAM(pool: Pool) {
     getSuperAdmin,
   };
 
-  const commands = {
+  const requests = {
     createAdmin,
     createImportedFaculty,
     createImportedStudent,
@@ -308,7 +308,7 @@ export function bootstrapIAM(pool: Pool) {
 
   return {
     queries,
-    commands,
+    requests,
     services,
   };
 }

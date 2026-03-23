@@ -1,5 +1,6 @@
 import { createPool } from "mysql2/promise";
 import { bootstrapIAM } from "./bootstrap/bootstrapIAM";
+import { Role, UniversityId, PersonId } from "@piconex/iam/composition";
 
 async function main() {
   const pool = createPool({
@@ -18,9 +19,21 @@ async function main() {
 
   const iam = bootstrapIAM(pool);
 
-  console.log("Success");
+  const personDTO = await iam.queries.getPersonById.execute({
+    actor: {
+      personId: PersonId.create("2"),
+      universityId: UniversityId.create("1jdhx3b35"),
+      isActive: true,
+      isSuperAdmin: false,
+      activeRoles: [Role.Admin],
+    },
+    personId: PersonId.create("2"),
+  });
+
+  console.log(personDTO);
 }
 
 main().catch((err) => {
-  console.error(err);
+  if (err instanceof Error) console.error(err.message);
+  else console.log(err);
 });

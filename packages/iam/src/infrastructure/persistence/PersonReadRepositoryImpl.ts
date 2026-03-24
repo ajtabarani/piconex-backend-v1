@@ -70,7 +70,37 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
       universityId: UniversityId.create(person.universityId),
       isActive: person.isActive,
       isSuperAdmin: person.isSuperAdmin,
-      activeRoles: person.roles,
+      activeRoles: person.activeRoles,
+    };
+  }
+
+  async findAuthorizationSnapshotByExternalAuthAccount(
+    authProvider: AuthProvider,
+    externalAuthId: ExternalAuthId,
+  ): Promise<PersonAuthorizationSnapshot | null> {
+    const [rows] = await this.pool.query<any[]>(
+      `
+    SELECT p.person_id
+    FROM iam_person p
+    JOIN iam_person_externalAuthAccount ea
+      ON ea.person_id = p.person_id
+    WHERE ea.auth_provider = ? AND ea.external_auth_id = ?
+    `,
+      [authProvider, externalAuthId],
+    );
+
+    if (rows.length === 0) return null;
+
+    const person = await this.findById(rows[0].person_id);
+
+    if (!person) return null;
+
+    return {
+      personId: PersonId.create(person.personId),
+      universityId: UniversityId.create(person.universityId),
+      isActive: person.isActive,
+      isSuperAdmin: person.isSuperAdmin,
+      activeRoles: person.activeRoles,
     };
   }
 
@@ -174,6 +204,7 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
       externalAuthAccounts: externalAuthAccounts.map((ea) => ({
         authProvider: ea.auth_provider,
         externalAuthId: ea.external_auth_id,
+        linkedAt: ea.linked_at,
       })),
       universityId: row.university_id,
 
@@ -191,7 +222,7 @@ export class PersonReadRepositoryImpl implements PersonReadRepository {
 
       birthday: row.birthday,
 
-      roles,
+      activeRoles: roles,
 
       isActive: row.state === "Active",
       isSuperAdmin: !!row.is_super_admin,

@@ -1,6 +1,5 @@
+import { AuthProvider } from "./AuthProvider";
 import { ExternalAuthId } from "./valueObjects";
-
-export type AuthProvider = "google" | "microsoft" | "keycloak" | "github";
 
 export class ExternalAuthAccount {
   constructor(

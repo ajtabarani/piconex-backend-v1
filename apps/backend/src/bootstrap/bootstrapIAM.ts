@@ -37,6 +37,7 @@ import {
   AssignFacultyRole,
   AssignStudentRole,
   GetPersonByExternalAuthAccount,
+  GetPersonAuthorizationSnapshotByExternalAuthAccount,
 } from "@piconex/iam/composition";
 
 export function bootstrapIAM(pool: Pool) {
@@ -67,11 +68,16 @@ export function bootstrapIAM(pool: Pool) {
     policyGuard,
   );
 
-  const getAuthorizationSnapshot = new GetPersonAuthorizationSnapshot(
+  const getPersonAuthorizationSnapshot = new GetPersonAuthorizationSnapshot(
     personReadRepository,
     personPolicy,
     policyGuard,
   );
+
+  const getPersonAuthorizationSnapshotByExternalAuthAccount =
+    new GetPersonAuthorizationSnapshotByExternalAuthAccount(
+      personReadRepository,
+    );
 
   const getPersonByExternalAuthId = new GetPersonByExternalAuthAccount(
     personReadRepository,
@@ -261,13 +267,14 @@ export function bootstrapIAM(pool: Pool) {
   const authorizationService = new AuthorizationServiceImpl(
     checkPersonHasRole,
     checkPersonIsActive,
-    getAuthorizationSnapshot,
+    getPersonAuthorizationSnapshot,
   );
 
   const queries = {
     checkPersonHasRole,
     checkPersonIsActive,
-    getAuthorizationSnapshot,
+    getPersonAuthorizationSnapshot,
+    getPersonAuthorizationSnapshotByExternalAuthAccount,
     getPersonByExternalAuthId,
     getPersonById,
     getAdminProfile,

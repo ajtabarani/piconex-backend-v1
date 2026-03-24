@@ -19,6 +19,11 @@ export interface PersonReadRepository {
     personId: PersonId,
   ): Promise<PersonAuthorizationSnapshot | null>;
 
+  findAuthorizationSnapshotByExternalAuthAccount(
+    provider: AuthProvider,
+    externalAuthId: ExternalAuthId,
+  ): Promise<PersonAuthorizationSnapshot | null>;
+
   findStudentProfile(personId: PersonId): Promise<StudentProfileDTO | null>;
   findFacultyProfile(personId: PersonId): Promise<FacultyProfileDTO | null>;
   findAdminProfile(personId: PersonId): Promise<AdminProfileDTO | null>;

@@ -1,4 +1,5 @@
 export * from "./Address";
+export * from "./AuthProvider";
 export * from "./ExternalAuthAccount";
 
 export * from "./PersonState";

@@ -6,6 +6,7 @@ import {
   PersonId,
   ExternalAuthId,
   Address,
+  AuthProvider,
 } from "@piconex/iam/composition";
 
 async function main() {
@@ -46,7 +47,7 @@ async function main() {
     },
     personId: PersonId.create("admin-uuid-123"),
 
-    authProvider: "google",
+    authProvider: AuthProvider.Google,
     externalAuthId: ExternalAuthId.create("google-oauth-id-abc123"),
 
     universityId: UniversityId.create("university-123"),

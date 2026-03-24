@@ -5,6 +5,7 @@ export type PersonDTO = {
   externalAuthAccounts: {
     authProvider: string;
     externalAuthId: string;
+    linkedAt: Date;
   }[];
   universityId: string;
 
@@ -22,7 +23,7 @@ export type PersonDTO = {
 
   birthday: Date | null;
 
-  roles: Role[];
+  activeRoles: Role[];
 
   isActive: boolean;
   isSuperAdmin: boolean;

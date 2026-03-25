@@ -10,10 +10,13 @@
   },
   "dependencies": {
     "@piconex/iam": "*",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-oauth2-jwt-bearer": "^1.7.4",
     "mysql2": "^3.9.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6"
   }
 }

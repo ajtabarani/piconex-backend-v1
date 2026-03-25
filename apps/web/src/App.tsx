@@ -1,8 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import Home from "./pages/Home";
 
 function App() {
   const {
-    isLoading, // Loading state, the SDK needs to reach Auth0 on load
+    isLoading,
     isAuthenticated,
     error,
     loginWithRedirect: login, // Starts the login flow
@@ -22,9 +23,7 @@ function App() {
     <>
       <p>Logged in as {user?.email}</p>
 
-      <h1>User Profile</h1>
-
-      <pre>{JSON.stringify(user, null, 2)}</pre>
+      <Home />
 
       <button onClick={logout}>Logout</button>
     </>

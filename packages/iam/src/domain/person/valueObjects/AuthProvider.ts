@@ -1,6 +1,3 @@
 export enum AuthProvider {
-  Google = "google",
-  Microsoft = "microsoft",
-  Keycloak = "keycloak",
-  Github = "github",
+  Google = "google-oauth2",
 }

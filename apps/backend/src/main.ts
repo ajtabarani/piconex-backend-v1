@@ -1,7 +1,9 @@
+import cors from "cors";
 import express from "express";
 import { createPool } from "mysql2/promise";
 import { bootstrapIAM } from "./bootstrap/bootstrapIAM";
 import { registerRoutes } from "./http/routes";
+import { checkJwt } from "./http/middleware/checkJwt";
 
 async function main() {
   const pool = createPool({
@@ -21,7 +23,13 @@ async function main() {
   const iam = bootstrapIAM(pool);
 
   const app = express();
+  app.use(
+    cors({
+      origin: "http://localhost:5173",
+    }),
+  );
   app.use(express.json());
+  app.use(checkJwt);
 
   // 4. Register routes (pass deps)
   registerRoutes(app, {

@@ -9,7 +9,10 @@ createRoot(document.getElementById("root")!).render(
     <Auth0Provider
       domain="dev-jo3m60rh6auevpev.us.auth0.com"
       clientId="MAbBaD1durq6tjtNh9S5Snjmj2h1ofHO"
-      authorizationParams={{ redirect_uri: window.location.origin }}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: "https://accessify-backend",
+      }}
     >
       <App />
     </Auth0Provider>

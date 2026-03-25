@@ -1,23 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthProvider, ExternalAuthId } from "@piconex/iam/composition";
 import { bootstrapIAM } from "../../bootstrap/bootstrapIAM";
+import { JWTPayload } from "express-oauth2-jwt-bearer";
 
 type IAM = ReturnType<typeof bootstrapIAM>;
 
 export const authMiddleware = (iam: IAM) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const authHeader = req.headers.authorization;
-
-      if (!authHeader?.startsWith("Bearer ")) {
+      const payload = req.auth?.payload;
+      if (!payload) {
         return res.status(401).send("Unauthorized");
       }
 
-      const token = authHeader.slice("Bearer ".length);
-
-      const decoded = decodeJwt(token);
-
-      const { authProvider, externalAuthId } = extractIdentity(decoded);
+      const { authProvider, externalAuthId } = extractIdentity(payload);
 
       const actor =
         await iam.queries.getPersonAuthorizationSnapshotByExternalAuthAccount.execute(
@@ -39,16 +35,32 @@ export const authMiddleware = (iam: IAM) => {
   };
 };
 
-function decodeJwt(token: string): unknown {
-  const payload = token.split(".")[1];
-  if (!payload) throw new Error("Invalid token");
-
-  return JSON.parse(Buffer.from(payload, "base64").toString());
-}
-
-function extractIdentity(decoded: any): {
+export function extractIdentity(payload: JWTPayload): {
   authProvider: AuthProvider;
   externalAuthId: ExternalAuthId;
 } {
-  throw new Error("extractIdentity not implemented");
+  if (!payload.sub) {
+    throw new Error("Missing sub in token");
+  }
+
+  const [providerRaw, userId] = payload.sub.split("|");
+
+  if (!providerRaw || !userId) {
+    throw new Error("Invalid sub format");
+  }
+
+  let authProvider: AuthProvider;
+
+  switch (providerRaw) {
+    case "google-oauth2":
+      authProvider = AuthProvider.Google;
+      break;
+    default:
+      throw new Error(`Unsupported provider: ${providerRaw}`);
+  }
+
+  return {
+    authProvider,
+    externalAuthId: ExternalAuthId.create(userId),
+  };
 }

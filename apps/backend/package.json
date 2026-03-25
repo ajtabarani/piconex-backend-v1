@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@piconex/iam": "*",
+    "express": "^5.2.1",
     "mysql2": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
   }
 }

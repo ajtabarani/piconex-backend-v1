@@ -1,35 +1,29 @@
 import { Request, Response, NextFunction } from "express";
-import { bootstrapIAM } from "../../bootstrap/bootstrapIAM";
 import { AuthProvider, ExternalAuthId } from "@piconex/iam/composition";
+import { bootstrapIAM } from "../../bootstrap/bootstrapIAM";
 
-// extend Request type via your /types file
-interface AuthedRequest extends Request {
-  actor?: any;
-}
+type IAM = ReturnType<typeof bootstrapIAM>;
 
-export const authMiddleware = (iam: ReturnType<typeof bootstrapIAM>) => {
-  return async (req: AuthedRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (iam: IAM) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // 1. Extract token
       const authHeader = req.headers.authorization;
+
       if (!authHeader?.startsWith("Bearer ")) {
         return res.status(401).send("Unauthorized");
       }
 
-      const token = authHeader.replace("Bearer ", "");
+      const token = authHeader.slice("Bearer ".length);
 
-      // 2. Verify token (stub for now)
-      const decoded = await verifyJwt(token);
+      const decoded = decodeJwt(token);
 
-      // 3. Extract identity
       const { authProvider, externalAuthId } = extractIdentity(decoded);
 
-      // 4. Resolve actor from IAM
       const actor =
         await iam.queries.getPersonAuthorizationSnapshotByExternalAuthAccount.execute(
           {
-            authProvider: AuthProvider(authProvider),
-            externalAuthId: ExternalAuthId.create(externalAuthId),
+            authProvider,
+            externalAuthId,
           },
         );
 
@@ -37,30 +31,24 @@ export const authMiddleware = (iam: ReturnType<typeof bootstrapIAM>) => {
         return res.status(401).send("Unauthorized");
       }
 
-      // 5. Attach to request
       req.actor = actor;
-
       next();
-    } catch (e) {
+    } catch {
       return res.status(401).send("Unauthorized");
     }
   };
 };
 
+function decodeJwt(token: string): unknown {
+  const payload = token.split(".")[1];
+  if (!payload) throw new Error("Invalid token");
+
+  return JSON.parse(Buffer.from(payload, "base64").toString());
+}
+
 function extractIdentity(decoded: any): {
-  authProvider: string;
-  externalAuthId: string;
+  authProvider: AuthProvider;
+  externalAuthId: ExternalAuthId;
 } {
-  // Example: "auth0|abc123"
-  const sub: string = decoded.sub;
-
-  if (!sub) throw new Error("Invalid token");
-
-  const [authProvider, externalAuthId] = sub.split("|");
-
-  if (!authProvider || !externalAuthId) {
-    throw new Error("Invalid sub format");
-  }
-
-  return { authProvider, externalAuthId };
+  throw new Error("extractIdentity not implemented");
 }

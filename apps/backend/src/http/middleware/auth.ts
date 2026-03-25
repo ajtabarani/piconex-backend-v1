@@ -28,6 +28,7 @@ export const authMiddleware = (iam: IAM) => {
       }
 
       req.actor = actor;
+
       next();
     } catch {
       return res.status(401).send("Unauthorized");

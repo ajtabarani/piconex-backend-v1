@@ -5,6 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "start": "npm run build && node dist/main.js",
     "typecheck": "tsc --noEmit"
   },

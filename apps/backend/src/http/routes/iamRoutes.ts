@@ -1,6 +1,6 @@
 import { Request, Router, Express } from "express";
-import { bootstrapIAM } from "../../bootstrap/bootstrapIAM";
 import { PersonId } from "@piconex/iam/composition";
+import { bootstrapIAM } from "../../bootstrap";
 
 type IAM = ReturnType<typeof bootstrapIAM>;
 

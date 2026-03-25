@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthProvider, ExternalAuthId } from "@piconex/iam/composition";
-import { bootstrapIAM } from "../../bootstrap/bootstrapIAM";
+import { bootstrapIAM } from "../../bootstrap";
 import { JWTPayload } from "express-oauth2-jwt-bearer";
 
 type IAM = ReturnType<typeof bootstrapIAM>;

@@ -1,12 +1,11 @@
 import cors from "cors";
 import express from "express";
 import { createPool } from "mysql2/promise";
-import { bootstrapIAM } from "./bootstrap/bootstrapIAM";
-import { registerRoutes } from "./http/routes";
-import { checkJwt } from "./http/middleware/checkJwt";
-import { authMiddleware } from "./http/middleware/auth";
+import { bootstrapIAM } from "./bootstrap";
+import { registerIAMRoutes, checkJwt, authMiddleware } from "./http";
 
 async function main() {
+  // Bootstrapping
   const pool = createPool({
     host: "178.156.189.138",
     user: "piconex",
@@ -22,24 +21,24 @@ async function main() {
   });
 
   const iam = bootstrapIAM(pool);
-  const auth = authMiddleware(iam);
 
+  // Routing
   const app = express();
+
+  /// Middleware
+  app.use(express.json());
   app.use(
     cors({
       origin: "http://localhost:5173",
     }),
   );
-  app.use(express.json());
   app.use(checkJwt);
-  app.use(auth);
+  app.use(authMiddleware(iam));
 
-  // 4. Register routes (pass deps)
-  registerRoutes(app, {
-    iam,
-  });
+  /// Registering routes
+  registerIAMRoutes(app, iam);
 
-  // 5. Start server
+  /// Starting server
   app.listen(3000, () => {
     console.log("Server running on port 3000");
   });

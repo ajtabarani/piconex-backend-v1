@@ -41,7 +41,6 @@ import { AuthProvider, ExternalAuthAccount } from "./valueObjects";
 
 export class Person {
   private roles: Set<Role>;
-  private state: PersonState;
 
   private studentProfile?: StudentProfile;
   private adminProfile?: AdminProfile;
@@ -70,7 +69,8 @@ export class Person {
     private address: Address | null,
 
     roles: Role[],
-    state: PersonState,
+    private state: PersonState,
+    private stateChangedAt: Date,
 
     private readonly createdAt: Date,
     private updatedAt: Date | null,
@@ -91,8 +91,6 @@ export class Person {
     }
 
     this.roles = new Set(roles);
-    this.state = state;
-    this.isSuperAdmin = isSuperAdmin;
   }
 
   // Factories
@@ -135,6 +133,7 @@ export class Person {
       address,
       [Role.Student],
       PersonState.Active,
+      now,
       now,
       null,
       importJobId,
@@ -191,6 +190,7 @@ export class Person {
       [Role.Faculty],
       PersonState.Active,
       now,
+      now,
       null,
       importJobId,
     );
@@ -244,6 +244,7 @@ export class Person {
       [Role.Admin],
       PersonState.Active,
       now,
+      now,
       null,
       null,
     );
@@ -289,6 +290,7 @@ export class Person {
 
     roles: Role[],
     state: PersonState,
+    stateChangedAt: Date,
 
     createdAt: Date,
     updatedAt: Date,
@@ -316,6 +318,7 @@ export class Person {
       address,
       roles,
       state,
+      stateChangedAt,
       createdAt,
       updatedAt,
       importJobId,
@@ -374,15 +377,19 @@ export class Person {
   }
 
   deactivate(): void {
+    const now = new Date();
     this.state = PersonState.Inactive;
-    this.updatedAt = new Date();
-    this.addEvent(new PersonDeactivated(this.personId, new Date()));
+    this.stateChangedAt = now;
+    this.updatedAt = now;
+    this.addEvent(new PersonDeactivated(this.personId, now));
   }
 
   activate(): void {
+    const now = new Date();
     this.state = PersonState.Active;
-    this.updatedAt = new Date();
-    this.addEvent(new PersonActivated(this.personId, new Date()));
+    this.stateChangedAt = now;
+    this.updatedAt = now;
+    this.addEvent(new PersonActivated(this.personId, now));
   }
 
   linkExternalAuthAccount(
@@ -662,6 +669,10 @@ export class Person {
 
   getState(): PersonState {
     return this.state;
+  }
+
+  getStateChangedAt(): Date {
+    return this.stateChangedAt;
   }
 
   getCreatedAt(): Date {

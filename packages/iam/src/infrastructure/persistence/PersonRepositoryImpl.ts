@@ -84,8 +84,8 @@ export class PersonRepositoryImpl implements PersonRepository {
           pronouns, sex, gender,
           birthday,
           address_line1, address_line2, city, geographical_state, zip_code, country,
-          state, created_at, updated_at, import_job_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          state, state_changed_at, created_at, updated_at, import_job_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
           university_id = VALUES(university_id),
           is_super_admin = VALUES(is_super_admin),
@@ -106,6 +106,7 @@ export class PersonRepositoryImpl implements PersonRepository {
           zip_code = VALUES(zip_code),
           country = VALUES(country),
           state = VALUES(state),
+          state_changed_at = VALUES(state_changed_at),
           updated_at = VALUES(updated_at),
           import_job_id = VALUES(import_job_id)
         `,
@@ -136,6 +137,7 @@ export class PersonRepositoryImpl implements PersonRepository {
           person.getAddress()?.getCountry(),
 
           person.getState(),
+          person.getStateChangedAt(),
           person.getCreatedAt(),
           person.getUpdatedAt(),
           person.getImportJobId(),
@@ -377,6 +379,7 @@ export class PersonRepositoryImpl implements PersonRepository {
 
       roles,
       row.state,
+      row.state_changed_at,
 
       row.created_at,
       row.updated_at,

@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "apps/backend" },
+    { "path": "apps/web" },
     { "path": "packages/iam" }
     // { "path": "packages/caseIntakeAndEligibility" },
     // { "path": "packages/communication" } // Disabling building of anything but iam

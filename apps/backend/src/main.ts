@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import { createPool } from "mysql2/promise";
 import { bootstrapIAM } from "./bootstrap";
-import { registerIAMRoutes, checkJwt, authMiddleware } from "./http";
+import { registerIAMRoutes, checkJwt, authMiddleware, errorHandler } from "./http";
 
 async function main() {
   // Bootstrapping
@@ -37,6 +37,9 @@ async function main() {
 
   /// Registering routes
   registerIAMRoutes(app, iam);
+  
+  // Error handling
+  app.use(errorHandler);
 
   /// Starting server
   app.listen(3000, () => {

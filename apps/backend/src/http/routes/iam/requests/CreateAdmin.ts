@@ -21,7 +21,7 @@ const addressSchema = z.object({
 });
 
 const bodySchema = z.object({
-  universityId: z.string().uuid({ message: "universityId must be a valid UUID" }),
+  universityId: z.string().trim().min(1, "universityId is required"),
 
   firstName: z.string().min(1, "firstName is required"),
   preferredName: z.string().nullable().optional(),

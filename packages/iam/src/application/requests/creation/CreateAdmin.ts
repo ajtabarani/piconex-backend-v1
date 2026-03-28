@@ -6,6 +6,7 @@ import {
   PersonRepository,
   Person,
   AuthProvider,
+  ImportJobId,
 } from "../../../domain";
 import {
   PersonAuthorizationSnapshot,
@@ -17,8 +18,6 @@ export interface CreateAdminRequest {
   actor: PersonAuthorizationSnapshot;
 
   personId: PersonId;
-  authProvider: AuthProvider;
-  externalAuthId: ExternalAuthId;
   universityId: UniversityId;
 
   firstName: string;
@@ -39,6 +38,8 @@ export interface CreateAdminRequest {
   jobTitle: string | null;
   department: string | null;
   specialization: string | null;
+
+  importJobId: ImportJobId | null;
 }
 
 export class CreateAdmin {
@@ -51,19 +52,8 @@ export class CreateAdmin {
   async execute(request: CreateAdminRequest): Promise<void> {
     this.guard.ensure(this.policy.isSuperAdmin(request.actor));
 
-    const existing = await this.repository.findByExternalAuthAccount(
-      request.authProvider,
-      request.externalAuthId,
-    );
-
-    if (existing) {
-      throw new Error("External account already linked");
-    }
-
     const person = Person.createAdmin(
       request.personId,
-      request.authProvider,
-      request.externalAuthId,
       request.universityId,
       request.firstName,
       request.preferredName,
@@ -79,6 +69,7 @@ export class CreateAdmin {
       request.jobTitle,
       request.department,
       request.specialization,
+      request.importJobId,
     );
 
     await this.repository.save(person);

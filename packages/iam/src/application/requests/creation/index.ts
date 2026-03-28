@@ -1,3 +1,3 @@
 export * from "./CreateAdmin";
-export * from "./CreateImportedFaculty";
-export * from "./CreateImportedStudent";
+export * from "./CreateFaculty";
+export * from "./CreateStudent";

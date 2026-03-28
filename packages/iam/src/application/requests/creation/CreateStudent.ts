@@ -12,7 +12,7 @@ import {
   PolicyGuard,
 } from "../../policies";
 
-export interface CreateImportedStudentRequest {
+export interface CreateStudentRequest {
   actor: PersonAuthorizationSnapshot;
 
   personId: PersonId;
@@ -37,20 +37,20 @@ export interface CreateImportedStudentRequest {
   academicLevel: string | null;
   yearOfStudy: string | null;
 
-  importJobId: ImportJobId;
+  importJobId: ImportJobId | null;
 }
 
-export class CreateImportedStudent {
+export class CreateStudent {
   constructor(
     private readonly repository: PersonRepository,
     private readonly policy: PersonPolicy,
     private readonly guard: PolicyGuard,
   ) {}
 
-  async execute(request: CreateImportedStudentRequest): Promise<void> {
+  async execute(request: CreateStudentRequest): Promise<void> {
     this.guard.ensure(this.policy.hasAdministrativeAuthority(request.actor));
 
-    const person = Person.createImportedStudent(
+    const person = Person.createStudent(
       request.personId,
       request.universityId,
       request.firstName,

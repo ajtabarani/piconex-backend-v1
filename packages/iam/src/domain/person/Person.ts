@@ -94,7 +94,7 @@ export class Person {
   }
 
   // Factories
-  static createImportedStudent(
+  static createStudent(
     personId: PersonId,
     universityId: UniversityId,
     firstName: string,
@@ -111,7 +111,7 @@ export class Person {
     universityProgram: string | null,
     academicLevel: string | null,
     yearOfStudy: string | null,
-    importJobId: ImportJobId,
+    importJobId: ImportJobId | null,
   ): Person {
     const now = new Date();
 
@@ -146,12 +146,12 @@ export class Person {
     );
 
     person.addEvent(new PersonCreated(personId, [Role.Student], now));
-    person.addEvent(new PersonImported(personId, importJobId, now));
+    if (importJobId) person.addEvent(new PersonImported(personId, importJobId, now));
 
     return person;
   }
 
-  static createImportedFaculty(
+  static createFaculty(
     personId: PersonId,
     universityId: UniversityId,
     firstName: string,
@@ -167,7 +167,7 @@ export class Person {
     address: Address | null,
     department: string | null,
     title: string | null,
-    importJobId: ImportJobId,
+    importJobId: ImportJobId | null,
   ): Person {
     const now = new Date();
 
@@ -198,15 +198,13 @@ export class Person {
     person.facultyProfile = FacultyProfile.create(department, title);
 
     person.addEvent(new PersonCreated(personId, [Role.Faculty], now));
-    person.addEvent(new PersonImported(personId, importJobId, now));
+    if (importJobId) person.addEvent(new PersonImported(personId, importJobId, now));
 
     return person;
   }
 
   static createAdmin(
     personId: PersonId,
-    authProvider: AuthProvider,
-    externalAuthId: ExternalAuthId,
     universityId: UniversityId,
     firstName: string,
     preferredName: string | null,
@@ -222,6 +220,7 @@ export class Person {
     jobTitle: string | null,
     department: string | null,
     specialization: string | null,
+    importJobId: ImportJobId | null,
   ): Person {
     const now = new Date();
 
@@ -246,7 +245,7 @@ export class Person {
       now,
       now,
       null,
-      null,
+      importJobId,
     );
 
     person.adminProfile = AdminProfile.create(
@@ -255,14 +254,8 @@ export class Person {
       specialization,
     );
 
-    person.externalAuthAccounts.push(
-      new ExternalAuthAccount(authProvider, externalAuthId, now),
-    );
-
     person.addEvent(new PersonCreated(personId, [Role.Admin], now));
-    person.addEvent(
-      new ExternalAuthLinked(personId, authProvider, externalAuthId, now),
-    );
+    if (importJobId) person.addEvent(new PersonImported(personId, importJobId, now));
 
     return person;
   }

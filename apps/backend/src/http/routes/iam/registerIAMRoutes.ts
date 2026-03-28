@@ -13,7 +13,6 @@ import {
   registerRouteGetSuperAdmin,
 } from "./queries";
 
-/** Registers all IAM routes on `router` (no mount path). */
 export function registerIamRouter(router: Router, iam: IAM): void {
   registerRouteGetSuperAdmin(router, iam);
   registerRouteGetPersonByExternalAuthAccount(router, iam);
@@ -24,7 +23,6 @@ export function registerIamRouter(router: Router, iam: IAM): void {
   registerRouteGetAdminProfile(router, iam);
   registerRouteGetStudentProfile(router, iam);
   registerRouteGetFacultyProfile(router, iam);
-
   registerRouteGetPersonById(router, iam);
 }
 

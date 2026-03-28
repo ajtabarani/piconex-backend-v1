@@ -12,10 +12,59 @@ import {
   registerRouteGetStudentProfile,
   registerRouteGetSuperAdmin,
 } from "./queries";
-import { registerRouteCreateAdmin } from "./requests";
+import {
+  registerRouteActivatePerson,
+  registerRouteAssignAdminRole,
+  registerRouteAssignFacultyRole,
+  registerRouteAssignStudentRole,
+  registerRouteCreateAdmin,
+  registerRouteCreateFaculty,
+  registerRouteCreateStudent,
+  registerRouteDeactivateAdminRole,
+  registerRouteDeactivateFacultyRole,
+  registerRouteDeactivatePerson,
+  registerRouteDeactivateStudentRole,
+  registerRouteReactivateAdminRole,
+  registerRouteReactivateFacultyRole,
+  registerRouteReactivateStudentRole,
+  registerRouteTransferSuperAdminOwnership,
+  registerRouteUnlinkExternalAuthAccount,
+  registerRouteUpdateAdminProfile,
+  registerRouteUpdateContactInformation,
+  registerRouteUpdateDemographics,
+  registerRouteUpdateEmail,
+  registerRouteUpdateFacultyProfile,
+  registerRouteUpdateStudentProfile,
+  registerRouteUpdateUniversityId,
+} from "./requests";
 
 export function registerIamRouter(router: Router, iam: IAM): void {
   registerRouteCreateAdmin(router, iam);
+  registerRouteCreateFaculty(router, iam);
+  registerRouteCreateStudent(router, iam);
+  registerRouteTransferSuperAdminOwnership(router, iam);
+
+  registerRouteUpdateAdminProfile(router, iam);
+  registerRouteUpdateFacultyProfile(router, iam);
+  registerRouteUpdateStudentProfile(router, iam);
+  registerRouteUpdateContactInformation(router, iam);
+  registerRouteUpdateDemographics(router, iam);
+  registerRouteUpdateEmail(router, iam);
+  registerRouteUpdateUniversityId(router, iam);
+  registerRouteUnlinkExternalAuthAccount(router, iam);
+
+  registerRouteActivatePerson(router, iam);
+  registerRouteDeactivatePerson(router, iam);
+
+  registerRouteDeactivateAdminRole(router, iam);
+  registerRouteDeactivateFacultyRole(router, iam);
+  registerRouteDeactivateStudentRole(router, iam);
+  registerRouteReactivateAdminRole(router, iam);
+  registerRouteReactivateFacultyRole(router, iam);
+  registerRouteReactivateStudentRole(router, iam);
+  registerRouteAssignAdminRole(router, iam);
+  registerRouteAssignFacultyRole(router, iam);
+  registerRouteAssignStudentRole(router, iam);
 
   registerRouteGetSuperAdmin(router, iam);
   registerRouteGetPersonByExternalAuthAccount(router, iam);

@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   PersonId,
   UniversityId,
-  type CreateAdminRequest,
+  type CreateFacultyRequest,
 } from "@piconex/iam/composition";
 import type { IAM } from "../../../../bootstrap";
 import { parseZod } from "../../../utils/parseZod";
@@ -35,16 +35,15 @@ const bodySchema = z.object({
 
   address: addressSchema.nullable().optional(),
 
-  jobTitle: nullableStrOpt,
   department: nullableStrOpt,
-  specialization: nullableStrOpt,
+  title: nullableStrOpt,
 
   importJobId: importJobIdField,
 });
 
 type Body = z.infer<typeof bodySchema>;
 
-function bodyMapper(body: Body): Omit<CreateAdminRequest, "actor" | "personId"> {
+function bodyMapper(body: Body): Omit<CreateFacultyRequest, "actor" | "personId"> {
   return {
     universityId: UniversityId.create(body.universityId),
     firstName: body.firstName,
@@ -58,25 +57,24 @@ function bodyMapper(body: Body): Omit<CreateAdminRequest, "actor" | "personId"> 
     gender: body.gender ?? null,
     birthday: body.birthday ?? null,
     address: mapAddressOrNull(body.address),
-    jobTitle: body.jobTitle ?? null,
     department: body.department ?? null,
-    specialization: body.specialization ?? null,
+    title: body.title ?? null,
     importJobId: mapImportJobId(body.importJobId),
   };
 }
 
-export function registerRouteCreateAdmin(router: Router, iam: IAM) {
-  router.post("/admin", async (req: Request, res: Response) => {
+export function registerRouteCreateFaculty(router: Router, iam: IAM) {
+  router.post("/faculty", async (req: Request, res: Response) => {
     const body = parseZod(bodySchema, req.body);
 
     const personId = PersonId.create(randomUUID());
-    const request: CreateAdminRequest = {
+    const request: CreateFacultyRequest = {
       actor: req.actor,
       personId,
       ...bodyMapper(body),
     };
 
-    await iam.requests.createAdmin.execute(request);
+    await iam.requests.createFaculty.execute(request);
 
     const id = personId.toString();
     res.status(201).location(`/iam/person/${id}`).json({ personId: id });

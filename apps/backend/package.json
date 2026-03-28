@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@piconex/iam": "*",
+    "zod": "^3.24.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-oauth2-jwt-bearer": "^1.7.4",

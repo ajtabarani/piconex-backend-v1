@@ -100,7 +100,7 @@ CREATE TABLE iam_person_externalAuthAccount (
   UNIQUE (auth_provider, external_auth_id),
   UNIQUE (person_id, auth_provider),
 
-  FOREIGN KEY (person_id) REFERENCES iam_person(person_id)
+  FOREIGN KEY (person_id) REFERENCES iam_person(person_id) ON UPDATE CASCADE
 );
 
 ALTER TABLE iam_person_externalAuthAccount

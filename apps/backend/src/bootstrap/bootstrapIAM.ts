@@ -15,8 +15,8 @@ import {
   GetFacultyProfile,
   GetSuperAdmin,
   CreateAdmin,
-  CreateImportedFaculty,
-  CreateImportedStudent,
+  CreateFaculty,
+  CreateStudent,
   UpdateAdminProfile,
   UpdateFacultyProfile,
   UpdateStudentProfile,
@@ -124,13 +124,13 @@ export function bootstrapIAM(pool: Pool) {
     policyGuard,
   );
 
-  const createImportedFaculty = new CreateImportedFaculty(
+  const createFaculty = new CreateFaculty(
     personRepository,
     personPolicy,
     policyGuard,
   );
 
-  const createImportedStudent = new CreateImportedStudent(
+  const createStudent = new CreateStudent(
     personRepository,
     personPolicy,
     policyGuard,
@@ -285,8 +285,8 @@ export function bootstrapIAM(pool: Pool) {
 
   const requests = {
     createAdmin,
-    createImportedFaculty,
-    createImportedStudent,
+    createFaculty,
+    createStudent,
     updateAdminProfile,
     updateFacultyProfile,
     updateStudentProfile,
@@ -319,3 +319,5 @@ export function bootstrapIAM(pool: Pool) {
     services,
   };
 }
+
+export type IAM = ReturnType<typeof bootstrapIAM>;

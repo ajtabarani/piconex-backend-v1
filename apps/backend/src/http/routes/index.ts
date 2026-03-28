@@ -1,1 +1,1 @@
-export * from "./iamRoutes";
+export { registerIAMRoutes } from "./iam/registerIAMRoutes";

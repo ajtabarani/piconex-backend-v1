@@ -1,14 +1,14 @@
 export class Address {
   constructor(
-    private readonly addressLine1: string | null,
+    private readonly addressLine1: string,
     private readonly addressLine2: string | null,
-    private readonly city: string | null,
+    private readonly city: string,
     private readonly geographicalState: string | null,
     private readonly zipCode: string | null,
-    private readonly country: string | null,
+    private readonly country: string,
   ) {}
 
-  getAddressLine1(): string | null {
+  getAddressLine1(): string {
     return this.addressLine1;
   }
 
@@ -16,7 +16,7 @@ export class Address {
     return this.addressLine2;
   }
 
-  getCity(): string | null {
+  getCity(): string {
     return this.city;
   }
 
@@ -28,7 +28,7 @@ export class Address {
     return this.zipCode;
   }
 
-  getCountry(): string | null {
+  getCountry(): string {
     return this.country;
   }
 }

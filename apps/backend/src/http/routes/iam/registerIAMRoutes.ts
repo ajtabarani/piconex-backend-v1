@@ -12,8 +12,11 @@ import {
   registerRouteGetStudentProfile,
   registerRouteGetSuperAdmin,
 } from "./queries";
+import { registerRouteCreateAdmin } from "./requests";
 
 export function registerIamRouter(router: Router, iam: IAM): void {
+  registerRouteCreateAdmin(router, iam);
+
   registerRouteGetSuperAdmin(router, iam);
   registerRouteGetPersonByExternalAuthAccount(router, iam);
   registerRouteGetPersonAuthorizationSnapshotByExternalAuthAccount(router, iam);

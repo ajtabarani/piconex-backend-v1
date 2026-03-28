@@ -1,11 +1,9 @@
 import {
   PersonId,
-  ExternalAuthId,
   UniversityId,
   Address,
   PersonRepository,
   Person,
-  AuthProvider,
   ImportJobId,
 } from "../../../domain";
 import {

@@ -1,20 +1,35 @@
 import { Express, Router } from "express";
 import type { IAM } from "../../../bootstrap";
-import { registerRouteGetPersonById } from "./queries";
+import {
+  registerRouteCheckPersonHasRole,
+  registerRouteCheckPersonIsActive,
+  registerRouteGetAdminProfile,
+  registerRouteGetFacultyProfile,
+  registerRouteGetPersonAuthorizationSnapshot,
+  registerRouteGetPersonAuthorizationSnapshotByExternalAuthAccount,
+  registerRouteGetPersonByExternalAuthAccount,
+  registerRouteGetPersonById,
+  registerRouteGetStudentProfile,
+  registerRouteGetSuperAdmin,
+} from "./queries";
+
+/** Registers all IAM routes on `router` (no mount path). */
+export function registerIamRouter(router: Router, iam: IAM): void {
+  registerRouteGetSuperAdmin(router, iam);
+  registerRouteGetPersonByExternalAuthAccount(router, iam);
+  registerRouteGetPersonAuthorizationSnapshotByExternalAuthAccount(router, iam);
+  registerRouteCheckPersonHasRole(router, iam);
+  registerRouteCheckPersonIsActive(router, iam);
+  registerRouteGetPersonAuthorizationSnapshot(router, iam);
+  registerRouteGetAdminProfile(router, iam);
+  registerRouteGetStudentProfile(router, iam);
+  registerRouteGetFacultyProfile(router, iam);
+
+  registerRouteGetPersonById(router, iam);
+}
 
 export function registerIAMRoutes(app: Express, iam: IAM) {
   const router = Router();
-
-  registerRouteGetPersonById(router, iam);
-
-  // router.post("/admins", async (req: Request, res) => {
-  //   await iam.requests.createAdmin.execute({
-  //     actor: req.actor,
-  //     ...req.body,
-  //   });
-
-  //   res.status(201).send();
-  // });
-
+  registerIamRouter(router, iam);
   app.use("/iam", router);
 }
